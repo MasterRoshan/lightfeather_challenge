@@ -14,7 +14,7 @@ class SupervisorSelectSerializer(serializers.ModelSerializer):
 class SubmitSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
-    supervisor = serializers.IntegerField(required=True)
+    supervisor = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=True)
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'phone', 'supervisor']

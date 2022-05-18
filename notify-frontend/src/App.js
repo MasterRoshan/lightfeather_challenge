@@ -16,14 +16,46 @@ import Button from '@mui/material/Button';
 function App() {
   const [selectedSupervisor, setSelectedSupervisor] = React.useState('');
   const [supervisors, setSupervisors] = React.useState(null);
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [phone, setPhone] = React.useState('');
 
   const handleChange = (event) => {
     setSelectedSupervisor(event.target.value);
   };
 
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePhoneChange = (event) => {
+    setPhone(event.target.value);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    alert(`submitted`)
+    fetch('http://localhost:8000/api/submit',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        phone: phone,
+        supervisor: selectedSupervisor
+      })
+    })
   }
   
   React.useEffect(() => {
@@ -57,10 +89,10 @@ function App() {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2} mt={1}>
           <Grid item xs={6}>
-            <TextField id="first-name" label="First Name" variant="outlined" fullWidth autoFocus required/>
+            <TextField value={firstName} onChange={handleFirstNameChange} id="first-name" label="First Name" variant="outlined" fullWidth autoFocus required/>
           </Grid>
           <Grid item xs={6}>
-            <TextField id="last-name" label="Last Name" variant="outlined" fullWidth autoFocus required/>
+            <TextField value={lastName} onChange={handleLastNameChange} id="last-name" label="Last Name" variant="outlined" fullWidth autoFocus required/>
           </Grid>
           <Grid item xs={12}>
             <Typography component="div">
@@ -78,10 +110,10 @@ function App() {
             </FormGroup>
           </Grid>
           <Grid item xs={6}>
-            <TextField id="email" label="Email" variant="outlined" fullWidth autoFocus/>
+            <TextField value={email} onChange={handleEmailChange} id="email" label="Email" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={6}>
-            <TextField id="phone" label="Phone Number" variant="outlined" fullWidth autoFocus/>
+            <TextField value={phone} onChange={handlePhoneChange} id="phone" label="Phone Number" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={12}>
             <FormControl fullWidth>
