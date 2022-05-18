@@ -6,6 +6,11 @@ class SupervisorListSerializer(serializers.ModelSerializer):
         model = User
         fields = ['jurisdiction', 'last_name', 'first_name']
 
+class SupervisorSelectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'last_name', 'first_name']
+
 class SubmitSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
