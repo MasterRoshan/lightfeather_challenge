@@ -1,6 +1,5 @@
 from users.serializers import SubmitSerializer, SupervisorListSerializer, SupervisorSelectSerializer
 from users.models import User
-from rest_framework.renderers import JSONRenderer
 from rest_framework import generics
 
 class SupervisorList(generics.ListAPIView):
