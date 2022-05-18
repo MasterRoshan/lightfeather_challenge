@@ -13,3 +13,14 @@ class SupervisorSelect(generics.ListAPIView):
 
 class Submit(generics.CreateAPIView):
     serializer_class = SubmitSerializer
+    def perform_create(self, serializer):
+        data = serializer.validated_data
+        print(f"\n\nSubmitted Data\n"
+            f"**************\n\n"
+            f"first_name: {data['first_name']}\n"
+            f"last_name: {data['last_name']}\n"
+            f"email: {data['email']}\n"
+            f"phone: {data['phone']}\n"
+            f"supervisor name: {data['supervisor'].first_name} {data['supervisor'].last_name}\n"
+            f"supervisor id: {data['supervisor'].id}\n\n")
+        serializer.save()

@@ -12,14 +12,27 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import FormHelperText from '@mui/material/FormHelperText';
 
 function App() {
   const [selectedSupervisor, setSelectedSupervisor] = React.useState('');
+  const [selectedSupervisorError, setSelectedSupervisorError] = React.useState(false);
+  const [selectedSupervisorErrorText, setSelectedSupervisorErrorText] = React.useState('');
   const [supervisors, setSupervisors] = React.useState(null);
   const [firstName, setFirstName] = React.useState('');
+  const [firstNameError, setFirstNameError] = React.useState(false);
+  const [firstNameErrorText, setFirstNameErrorText] = React.useState('');
   const [lastName, setLastName] = React.useState('');
+  const [lastNameError, setLastNameError] = React.useState(false);
+  const [lastNameErrorText, setLastNameErrorText] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [emailError, setEmailError] = React.useState(false);
+  const [emailErrorText, setEmailErrorText] = React.useState('');
   const [phone, setPhone] = React.useState('');
+  const [phoneError, setPhoneError] = React.useState(false);
+  const [phoneErrorText, setPhoneErrorText] = React.useState('');
+  const [success, setSuccess] = React.useState(false);
 
   const handleChange = (event) => {
     setSelectedSupervisor(event.target.value);
@@ -56,6 +69,48 @@ function App() {
         supervisor: selectedSupervisor
       })
     })
+    .then(response => {
+      setFirstNameError(false)
+      setFirstNameErrorText('')
+      setLastNameError(false)
+      setLastNameErrorText('')
+      setEmailError(false)
+      setEmailErrorText('')
+      setPhoneError(false)
+      setPhoneErrorText('')
+      setSelectedSupervisorError(false)
+      setSelectedSupervisorErrorText('')
+      setSuccess(response.ok)
+      if(response.ok)
+        return false
+      else
+        return response.json()
+
+    })
+    .then(messages => {
+      if(messages){
+        if('first_name' in messages){
+          setFirstNameError(true)
+          setFirstNameErrorText(messages.first_name[0])
+        }
+        if('last_name' in messages){
+          setLastNameError(true)
+          setLastNameErrorText(messages.last_name[0])
+        }
+        if('email' in messages){
+          setEmailError(true)
+          setEmailErrorText(messages.email[0])
+        }
+        if('phone' in messages){
+          setPhoneError(true)
+          setPhoneErrorText(messages.phone[0])
+        }
+        if('supervisor' in messages){
+          setSelectedSupervisorError(true)
+          setSelectedSupervisorErrorText(messages.supervisor[0])
+        }
+      }
+    })
   }
   
   React.useEffect(() => {
@@ -89,10 +144,10 @@ function App() {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2} mt={1}>
           <Grid item xs={6}>
-            <TextField value={firstName} onChange={handleFirstNameChange} id="first-name" label="First Name" variant="outlined" fullWidth autoFocus required/>
+            <TextField value={firstName} onChange={handleFirstNameChange} error={firstNameError} helperText={firstNameErrorText} id="first-name" label="First Name" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={6}>
-            <TextField value={lastName} onChange={handleLastNameChange} id="last-name" label="Last Name" variant="outlined" fullWidth autoFocus required/>
+            <TextField value={lastName} onChange={handleLastNameChange} error={lastNameError} helperText={lastNameErrorText} id="last-name" label="Last Name" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={12}>
             <Typography component="div">
@@ -110,13 +165,13 @@ function App() {
             </FormGroup>
           </Grid>
           <Grid item xs={6}>
-            <TextField value={email} onChange={handleEmailChange} id="email" label="Email" variant="outlined" fullWidth autoFocus/>
+            <TextField value={email} onChange={handleEmailChange} error={emailError} helperText={emailErrorText} id="email" label="Email" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={6}>
-            <TextField value={phone} onChange={handlePhoneChange} id="phone" label="Phone Number" variant="outlined" fullWidth autoFocus/>
+            <TextField value={phone} onChange={handlePhoneChange} error={phoneError} helperText={phoneErrorText} id="phone" label="Phone Number" variant="outlined" fullWidth autoFocus/>
           </Grid>
           <Grid item xs={12}>
-            <FormControl fullWidth>
+            <FormControl fullWidth error={selectedSupervisorError}>
               <InputLabel id="supervisor-label">Supervisor</InputLabel>
               <Select
                 labelId="supervisor-label"
@@ -125,10 +180,10 @@ function App() {
                 label="Supervisor"
                 onChange={handleChange}
                 fullWidth
-                required
               >
                 {supervisors}
               </Select>
+              {selectedSupervisorError && <FormHelperText>{selectedSupervisorErrorText}</FormHelperText>}
             </FormControl>
           </Grid>
           <Grid item xs={12}>
@@ -140,6 +195,11 @@ function App() {
                   Submit
             </Button>
           </Grid>
+          {success &&
+            <Grid item xs={12}>
+              <Alert severity="success">Your info was submitted successfully — prepare to be notified!</Alert>
+            </Grid>
+          }
         </Grid>
       </form>
     </div>
